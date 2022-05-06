@@ -18,11 +18,9 @@ namespace OOP6
 
         static void Main(string[] args)
         {
-            int moneyBuyer = 1000;
-            int moneySeller = 1000000;
+            Management management = new Management();
 
-
-
+            CreateHumans(management);
 
             bool isContinueCycle = true;
 
@@ -44,28 +42,47 @@ namespace OOP6
 
 
                         break;
-                    case "показать":
+                    case "п":
 
 
                         break;
                     default:
 
+                        management.ShowInwentoryAll();
 
                         break;
                 }
             }
         }
+        private static void CreateHumans(Management management)
+        {
+
+            int moneySeller = 1000000;
+            string nameSeller = "Mamon";
+            string characterRoleSeller = "Торговец";
+
+            management.CreateSeller(nameSeller, characterRoleSeller, moneySeller);
+
+            int moneyBuyer = 1000;
+            Console.Write("Выберите имя - ");
+            string nameBuyer = Console.ReadLine();
+            string characterRoleBuyer = "Игрок";
+
+            management.CreateBuyer(nameBuyer, characterRoleBuyer, moneyBuyer);
+
+        }
+
     }
 
     class Management
     {
         private Human _seller;
-        private Human __buyer;
+        private Human _buyer;
+            
 
-        internal void CreateBuyer()
+        internal void CreateBuyer(string name, string characterRole, int money)
         {
-
-
+            _buyer = new Buyer(name, characterRole, money);
         }
 
         internal void CreateSeller(string name, string characterRole, int money)
@@ -73,7 +90,6 @@ namespace OOP6
             _seller = new Seller(name, characterRole, money);
 
             _seller.InventoryAdd(RandomProductGenerator());
-
         }
 
         private List<Product> RandomProductGenerator()
@@ -104,11 +120,12 @@ namespace OOP6
             return products;
         }
 
-        internal void Show()
+        internal void ShowInwentoryAll()
         {
+            Console.Clear();
 
-
-
+            _buyer.ShowInventory();
+            _seller.ShowInventory();
         }
 
     }
@@ -159,8 +176,6 @@ namespace OOP6
         public Buyer(string name, string characterRole, int money) : base(name, characterRole, money)
         {
         }
-
-
     }
 
     internal class Seller : Human
@@ -168,7 +183,6 @@ namespace OOP6
         public Seller(string name, string characterRole, int money) : base(name, characterRole, money)
         {
         }
-
     }
 
     class Product
