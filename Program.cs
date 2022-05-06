@@ -101,19 +101,19 @@ namespace OOP6
             int volumeMin = 1;
             int volumeMax = 10;
             int numberProducts = 10;
-            string name = "Товар ";
+            string name = "Товар - ";
 
             List<Product> products = new();
             Random random = new();
 
             for (int i = 0; i < numberProducts; i++)
             {
-                name += (i + 1);
+                
                 int cost = random.Next(costMin, costMax);
                 int wieght = random.Next(weightMin, weightMax);
                 int volume = random.Next(volumeMin, volumeMax);
 
-                Product product = new(name, cost, wieght, volume);
+                Product product = new(name+i.ToString(), cost, wieght, volume);
                 products.Add(product);
             }
 
@@ -125,6 +125,7 @@ namespace OOP6
             Console.Clear();
 
             _buyer.ShowInventory();
+
             _seller.ShowInventory();
         }
 
@@ -166,7 +167,7 @@ namespace OOP6
         {
             foreach (var item in _inventory)
             {
-                Console.WriteLine(item.Name + " Цена - " + item.Cost + " Вес - " + " Объем - " + item.Volume);
+                Console.WriteLine(item.Name + " Цена - " + item.Cost + " Вес - " +item.Weight+ " Объем - " + item.Volume);
             }
         }
     }
