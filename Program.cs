@@ -19,6 +19,7 @@ namespace OOP6
         static void Main(string[] args)
         {
             Management management = new Management();
+            Menu menu = new();
 
             CreateHumans(management);
 
@@ -30,19 +31,20 @@ namespace OOP6
 
                 switch (userInput)
                 {
-                    case "добавить":
+                    case "к":
+
+                        management.BuyProduct();
+
+                        break;
+                    case "пр":
 
 
                         break;
-                    case "удалить":
+                    case "пм":
 
 
                         break;
-                    case "показать как":
-
-
-                        break;
-                    case "п":
+                    case "пи":
 
 
                         break;
@@ -74,11 +76,30 @@ namespace OOP6
 
     }
 
+    class Menu
+    {
+
+        internal void OutputHeader()
+        {
+            Console.Clear();
+            Console.WriteLine("Присутствуют следующие команды");
+            Console.WriteLine("Купить товар - к");
+            Console.WriteLine("Продать товар - пр");
+            Console.WriteLine("Показать прилавок торговца - пм");
+            Console.WriteLine("Показать ваш инвентарь - пи");
+        }
+
+        internal void NotCorrectInput()
+        {
+            Console.WriteLine("Введено не корректное значение");
+        }
+
+    }
+
     class Management
     {
-        private Human _seller;
-        private Human _buyer;
-            
+        private Seller _seller;
+        private Buyer _buyer;
 
         internal void CreateBuyer(string name, string characterRole, int money)
         {
@@ -96,6 +117,8 @@ namespace OOP6
         {
             int costMin = 1;
             int costMax = 1000;
+            int quantityMin = 1;
+            int quantityMax = 1000;
             int weightMin = 1;
             int weightMax = 100;
             int volumeMin = 1;
@@ -108,12 +131,13 @@ namespace OOP6
 
             for (int i = 0; i < numberProducts; i++)
             {
-                
+
                 int cost = random.Next(costMin, costMax);
                 int wieght = random.Next(weightMin, weightMax);
                 int volume = random.Next(volumeMin, volumeMax);
+                int quantity = random.Next(quantityMin, quantityMax);
 
-                Product product = new(name+i.ToString(), cost, wieght, volume);
+                Product product = new(name + i.ToString(), quantity, cost, wieght, volume);
                 products.Add(product);
             }
 
@@ -122,11 +146,72 @@ namespace OOP6
 
         internal void ShowInwentoryAll()
         {
+            Menu menu = new();
             Console.Clear();
 
-            _buyer.ShowInventory();
+            menu.OutputHeader();
+
+            Console.WriteLine("Асортимент продавца - " + _seller.Name + "\n");
 
             _seller.ShowInventory();
+
+            Console.WriteLine("\nИнвентарь господина " + _buyer.Name);
+
+            _buyer.ShowInventory();
+            Console.WriteLine("\nВ кошельке - " + _buyer.Money + " Денег");
+        }
+
+        internal void BuyProduct()
+        {
+            Console.Write("Выберите товар который хотите купить - ");
+            string product;
+            product = Console.ReadLine();
+            if (_seller.IsThereProduct(product))
+            {
+                AomuntProduct(product);
+            }
+            else
+            {
+                Console.WriteLine("Выбранный товар отсутствует.");
+            }
+        }
+
+        private void AomuntProduct(string product)
+        {
+            Menu menu = new();
+
+            int amount = 0;
+            Console.Write("Сколько товара вам нужно - ");
+            string amountString = Console.ReadLine();
+            if (IsNumber(amountString, ref amount))
+            {
+                if (amount > 0)
+                {
+                    int buerMoney = _buyer.Money;
+                    _seller.Transaction(product, amount, ref buerMoney);
+                    if (_buyer.IsThereProduct(product))
+                    {
+
+
+                    }else
+                    {
+                        Product tempProduct=new()
+                        _buyer.ProductAdd()
+
+                    }
+                }
+                else
+                { menu.NotCorrectInput(); }
+            }
+            else
+            { menu.NotCorrectInput(); }
+        }
+
+        internal bool IsNumber(string text, ref int number)
+        {
+            bool isNumber = int.TryParse(text, out number);
+
+            return isNumber;
         }
 
     }
@@ -167,9 +252,32 @@ namespace OOP6
         {
             foreach (var item in _inventory)
             {
-                Console.WriteLine(item.Name + " Цена - " + item.Cost + " Вес - " +item.Weight+ " Объем - " + item.Volume);
+                Console.WriteLine(item.Name + " Колличество - " + item.Quantity + "  Цена - " + item.Cost + " Вес - " + item.Weight + " Объем - " + item.Volume);
             }
         }
+
+        internal bool IsThereProduct(string productCheck)
+        {
+            bool isProduct = false;
+
+            foreach (Product product in _inventory)
+            {
+                if (product.Name == productCheck)
+                {
+                    isProduct = true;
+                }
+            }
+
+
+            return isProduct;
+        }
+
+        //internal bool IsNumber(string text, ref int number)
+        //{
+        //    bool isNumber = int.TryParse(text, out number);
+
+        //    return isNumber;
+        //}
     }
 
     internal class Buyer : Human
@@ -177,6 +285,9 @@ namespace OOP6
         public Buyer(string name, string characterRole, int money) : base(name, characterRole, money)
         {
         }
+
+
+
     }
 
     internal class Seller : Human
@@ -184,6 +295,37 @@ namespace OOP6
         public Seller(string name, string characterRole, int money) : base(name, characterRole, money)
         {
         }
+
+        internal bool Transaction(string product, int amount, ref int money)
+        {
+            bool transactionSuccessful = false;
+
+            foreach (Product tempProduct in _inventory)
+            {
+                if (tempProduct.Name == product)
+                {
+                    int price = tempProduct.Quantity * amount;
+                    if (price <= money)
+                    {
+                        if (tempProduct.QuantityAdd(amount))
+                        {
+                            money -= price;
+                        } else
+                        {
+                            Console.WriteLine("Операция отклонена, не достаточное колличество товара");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("У вас не достаточно денег для покупки");
+                    }
+                    break;
+                }
+            }
+
+            return transactionSuccessful;
+        }
+
     }
 
     class Product
@@ -192,14 +334,27 @@ namespace OOP6
         internal int Cost { get; private set; }
         internal int Weight { get; private set; }
         internal int Volume { get; private set; }
+        internal int Quantity { get; private set; }
 
-        internal Product(string name, int cost, int weight, int volume)
+        internal Product(string name, int quantity, int cost, int weight, int volume)
         {
             Name = name;
+            Quantity = quantity;
             Cost = cost;
             Weight = weight;
             Volume = volume;
         }
-    }
 
+        internal bool QuantityAdd(int volume)
+        {
+            bool isEnoughGuantity = false;
+
+            if (Volume>=volume)
+            {
+                Volume -= volume;
+                isEnoughGuantity = true;
+            }
+            return isEnoughGuantity;
+        }
+    }
 }
