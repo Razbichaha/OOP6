@@ -395,12 +395,12 @@ namespace OOP6
         internal int Cost { get; private set; }
         internal int Weight { get; private set; }
         internal int Volume { get; private set; }
-        private int Quantity;
+        private int _quantity;
 
         internal ProductCell(string name, int quantity, int cost, int weight, int volume)
         {
             Name = name;
-            Quantity = quantity;
+            _quantity = quantity;
             Cost = cost;
             Weight = weight;
             Volume = volume;
@@ -408,12 +408,12 @@ namespace OOP6
 
         internal void ChangeQuantity(int quantity)
         {
-            Quantity = quantity;
+            _quantity = quantity;
         }
 
         internal int ReturnQuantity()
         {
-            return Quantity;
+            return _quantity;
         }
     }
 }
