@@ -248,7 +248,7 @@ namespace OOP6
 
     abstract class Human
     {
-        protected List<ProductCell> _inventory = new List<ProductCell>();
+        protected List<ProductCell> Inventory = new List<ProductCell>();
 
         internal string Name { get; private set; }
 
@@ -270,17 +270,17 @@ namespace OOP6
 
         internal void ProductAdd(ProductCell product)
         {
-            _inventory.Add(product);
+            Inventory.Add(product);
         }
 
         internal void InventoryAdd(List<ProductCell> products)
         {
-            _inventory = products;
+            Inventory = products;
         }
 
         internal void ShowInventory()
         {
-            foreach (var product in _inventory)
+            foreach (var product in Inventory)
             {
                 Console.WriteLine("Товар - " + product.Name + " Колличество - " + product.ReturnQuantity() + "  Цена - " + product.Cost + " Вес - " + product.Weight + " Объем - " + product.Volume);
             }
@@ -290,7 +290,7 @@ namespace OOP6
         {
             bool isProduct = false;
 
-            foreach (ProductCell product in _inventory)
+            foreach (ProductCell product in Inventory)
             {
                 if (product.Name == productCheck)
                 {
@@ -302,7 +302,7 @@ namespace OOP6
 
         internal void GetValuesProduct(string product, ref string name, ref int quantity, ref int cost, ref int weight, ref int volume)
         {
-            foreach (ProductCell item in _inventory)
+            foreach (ProductCell item in Inventory)
             {
                 if (item.Name == product)
                 {
@@ -317,7 +317,7 @@ namespace OOP6
 
         internal void MakeSellTransaction(string product, int quantity, ref int money)
         {
-            foreach (ProductCell tempProduct in _inventory)
+            foreach (ProductCell tempProduct in Inventory)
             {
                 if (tempProduct.Name == product)
                 {
@@ -342,7 +342,7 @@ namespace OOP6
         {
             bool transactionSuccessful = false;
 
-            foreach (ProductCell tempProduct in _inventory)
+            foreach (ProductCell tempProduct in Inventory)
             {
                 if (tempProduct.Name == product)
                 {
@@ -365,11 +365,11 @@ namespace OOP6
 
         internal void ClearColection()
         {
-            for (int i = 0; i < _inventory.Count; i++)
+            for (int i = 0; i < Inventory.Count; i++)
             {
-                if (_inventory[i].ReturnQuantity() == 0)
+                if (Inventory[i].ReturnQuantity() == 0)
                 {
-                    _inventory.RemoveAt(i);
+                    Inventory.RemoveAt(i);
                 }
             }
         }
@@ -391,13 +391,11 @@ namespace OOP6
 
     class ProductCell
     {
-
+        private int _quantity;
         internal string Name { get; private set; }
         internal int Cost { get; private set; }
         internal int Weight { get; private set; }
         internal int Volume { get; private set; }
-
-        private int _quantity;
 
         internal ProductCell(string name, int quantity, int cost, int weight, int volume)
         {
