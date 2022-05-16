@@ -76,7 +76,7 @@ namespace OOP6
             Console.WriteLine("Показать ваш инвентарь - пи");
         }
 
-        internal void NotCorrectInput()
+        internal void ShowNotCorrectInput()
         {
             Console.WriteLine("Введено не корректное значение");
         }
@@ -95,10 +95,10 @@ namespace OOP6
         internal void CreateSeller(string name, string characterRole, int money)
         {
             _seller = new Seller(name, characterRole, money);
-            _seller.InventoryAdd(RandomProductGenerator());
+            _seller.InventoryAdd(GenerateRandomProducts());
         }
 
-        private List<Product> RandomProductGenerator()
+        private List<Product> GenerateRandomProducts()
         {
             int costMin = 1;
             int costMax = 1000;
@@ -221,10 +221,10 @@ namespace OOP6
                     }
                 }
                 else
-                { menu.NotCorrectInput(); }
+                { menu.ShowNotCorrectInput(); }
             }
             else
-            { menu.NotCorrectInput(); }
+            { menu.ShowNotCorrectInput(); }
         }
 
         internal void SellProduct()
