@@ -391,10 +391,12 @@ namespace OOP6
 
     class ProductCell
     {
+
         internal string Name { get; private set; }
         internal int Cost { get; private set; }
         internal int Weight { get; private set; }
         internal int Volume { get; private set; }
+
         private int _quantity;
 
         internal ProductCell(string name, int quantity, int cost, int weight, int volume)
