@@ -7,7 +7,7 @@ namespace OOP6
     {
         static void Main(string[] args)
         {
-            Management management = new Management();
+            Logic management = new Logic();
 
             CreateHumans(management);
 
@@ -47,7 +47,7 @@ namespace OOP6
                 }
             }
         }
-        private static void CreateHumans(Management management)
+        private static void CreateHumans(Logic management)
         {
             int moneySeller = 1000000;
             string nameSeller = "Mamon";
@@ -82,7 +82,7 @@ namespace OOP6
         }
     }
 
-    class Management
+    class Logic
     {
         private Seller _seller;
         private Buyer _buyer;
