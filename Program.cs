@@ -61,7 +61,7 @@ namespace OOP6
 
     class Menu
     {
-        internal void OutputHeader()
+        internal void ShowOutputHeader()
         {
             Console.Clear();
             Console.WriteLine("Присутствуют следующие команды");
@@ -71,7 +71,7 @@ namespace OOP6
             Console.WriteLine("Показать ваш инвентарь - пи");
         }
 
-        internal void ShowNotCorrectInput()
+        internal void ShowNotMessagCorrectInput()
         {
             Console.WriteLine("Введено не корректное значение");
         }
@@ -125,7 +125,7 @@ namespace OOP6
         {
             Menu menu = new();
             Console.Clear();
-            menu.OutputHeader();
+            menu.ShowOutputHeader();
             Console.WriteLine("\nАсортимент продавца - " + _seller.Name + "\n");
             _seller.ShowInventory();
             Console.WriteLine("\nИнвентарь господина " + _buyer.Name + "\n");
@@ -137,7 +137,7 @@ namespace OOP6
         {
             Menu menu = new();
             Console.Clear();
-            menu.OutputHeader();
+            menu.ShowOutputHeader();
             _buyer.ShowInventory();
         }
 
@@ -145,7 +145,7 @@ namespace OOP6
         {
             Menu menu = new();
             Console.Clear();
-            menu.OutputHeader();
+            menu.ShowOutputHeader();
             _seller.ShowInventory();
         }
 
@@ -157,7 +157,7 @@ namespace OOP6
 
             if (_seller.IsThereProduct(product))
             {
-                BuyTransaction(product);
+                MakeBuyTransaction(product);
             }
             else
             {
@@ -166,7 +166,7 @@ namespace OOP6
             ShowInwentoryAll();
         }
 
-        private void BuyTransaction(string product)
+        private void MakeBuyTransaction(string product)
         {
             Menu menu = new();
             int quantityProduct = 0;
@@ -186,11 +186,11 @@ namespace OOP6
                     ProductCell tempProduct;
                     int cap = 100000;
 
-                    _seller.SellTransaction(product, quantityProduct, ref cap);
+                    _seller.MakeSellTransaction(product, quantityProduct, ref cap);
 
                     if (_buyer.IsThereProduct(product))
                     {
-                        _buyer.BuyTransaction(product, quantityProduct, ref buyerMoney);
+                        _buyer.MakeBuyTransaction(product, quantityProduct, ref buyerMoney);
                         _buyer.MoneyAdd(buyerMoney);
                     }
                     else
@@ -204,12 +204,12 @@ namespace OOP6
                 }
                 else
                 {
-                    menu.ShowNotCorrectInput();
+                    menu.ShowNotMessagCorrectInput();
                 }
             }
             else
             {
-                menu.ShowNotCorrectInput();
+                menu.ShowNotMessagCorrectInput();
             }
         }
 
@@ -226,10 +226,10 @@ namespace OOP6
                 int quantityProduct = 0;
                 IsNumber(numberString, ref quantityProduct);
                 int buyerMoney = _buyer.Money;
-                _buyer.SellTransaction(product, quantityProduct, ref buyerMoney);
+                _buyer.MakeSellTransaction(product, quantityProduct, ref buyerMoney);
                 _buyer.MoneyAdd(buyerMoney);
                 int moneySeller = _seller.Money;
-                _seller.BuyTransaction(product, quantityProduct, ref moneySeller);
+                _seller.MakeBuyTransaction(product, quantityProduct, ref moneySeller);
             }
             else
             {
@@ -282,7 +282,7 @@ namespace OOP6
         {
             foreach (var product in _inventory)
             {
-                Console.WriteLine("Товар - " + product.Name + " Колличество - " + product.Quantity + "  Цена - " + product.Cost + " Вес - " + product.Weight + " Объем - " + product.Volume);
+                Console.WriteLine("Товар - " + product.Name + " Колличество - " + product.ReturnQuantity() + "  Цена - " + product.Cost + " Вес - " + product.Weight + " Объем - " + product.Volume);
             }
         }
 
@@ -307,7 +307,7 @@ namespace OOP6
                 if (item.Name == product)
                 {
                     name = item.Name;
-                    quantity = item.Quantity;
+                    quantity = item.ReturnQuantity();
                     cost = item.Cost;
                     weight = item.Weight;
                     volume = item.Volume;
@@ -315,18 +315,18 @@ namespace OOP6
             }
         }
 
-        internal void SellTransaction(string product, int quantity, ref int money)
+        internal void MakeSellTransaction(string product, int quantity, ref int money)
         {
             foreach (ProductCell tempProduct in _inventory)
             {
                 if (tempProduct.Name == product)
                 {
-                    int tempQuantity = tempProduct.Quantity;
+                    int tempQuantity = tempProduct.ReturnQuantity();
 
                     if (tempQuantity >= quantity & quantity > 0)
                     {
                         tempQuantity -= quantity;
-                        tempProduct.QuantityAdd(tempQuantity);
+                        tempProduct.ChangeQuantity(tempQuantity);
                         money += (tempProduct.Cost * quantity);
                     }
                     else
@@ -338,7 +338,7 @@ namespace OOP6
             }
         }
 
-        internal bool BuyTransaction(string product, int quantity, ref int money)
+        internal bool MakeBuyTransaction(string product, int quantity, ref int money)
         {
             bool transactionSuccessful = false;
 
@@ -349,8 +349,8 @@ namespace OOP6
                     int price = tempProduct.Cost * quantity;
                     if (price <= money & quantity > 0)
                     {
-                        int tempQuantity = tempProduct.Quantity + quantity;
-                        tempProduct.QuantityAdd(tempQuantity);
+                        int tempQuantity = tempProduct.ReturnQuantity() + quantity;
+                        tempProduct.ChangeQuantity(tempQuantity);
                         money -= price;
                     }
                     else
@@ -367,7 +367,7 @@ namespace OOP6
         {
             for (int i = 0; i < _inventory.Count; i++)
             {
-                if (_inventory[i].Quantity == 0)
+                if (_inventory[i].ReturnQuantity() == 0)
                 {
                     _inventory.RemoveAt(i);
                 }
@@ -395,7 +395,7 @@ namespace OOP6
         internal int Cost { get; private set; }
         internal int Weight { get; private set; }
         internal int Volume { get; private set; }
-        internal int Quantity { get; private set; }
+        private int Quantity;
 
         internal ProductCell(string name, int quantity, int cost, int weight, int volume)
         {
@@ -406,9 +406,14 @@ namespace OOP6
             Volume = volume;
         }
 
-        internal void QuantityAdd(int quantity)
+        internal void ChangeQuantity(int quantity)
         {
             Quantity = quantity;
+        }
+
+        internal int ReturnQuantity()
+        {
+            return Quantity;
         }
     }
 }
